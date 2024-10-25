@@ -1,0 +1,377 @@
+<!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Principito Explora CAS</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+            line-height: 1.6;
+        }
+        .quiz-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+        }
+        .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e6f3ff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .options label:hover {
+            background-color: #ffd700;
+        }
+        .emoji {
+            font-size: 2em;
+            margin-right: 10px;
+        }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .correct {
+            background-color: #98FB98;
+            color: #006400;
+        }
+        .incorrect {
+            background-color: #FFB6C1;
+            color: #8B0000;
+        }
+        button {
+            background-color: #b0c4de;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #ffd700;
+        }
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        .progress {
+            text-align: right;
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>El Principito y su Viaje por CAS 🌟</h1>
+        <div class="progress">Pregunta <span id="current">1</span>/20</div>
+        <div id="question-container"></div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "En mi pequeño planeta, aprendí que toda rosa necesita cuidados. ¿Qué aspecto de CAS representa mejor el cuidado de una rosa? 🌹",
+                options: [
+                    "Creatividad - porque cada rosa es única",
+                    "Servicio - porque implica dedicación y cuidado de otros",
+                    "Actividad - porque requiere movimiento físico"
+                ],
+                correct: 1,
+                explanation: "Como mi rosa necesitaba cuidados diarios, el servicio también requiere dedicación y amor hacia los demás."
+            },
+            {
+                question: "Cuando viajo entre planetas, debo planear cuidadosamente. ¿Qué etapa de CAS es similar a esto? 🚀",
+                options: [
+                    "La etapa de planificación",
+                    "La etapa de reflexión",
+                    "La etapa de acción"
+                ],
+                correct: 0,
+                explanation: "Como mis viajes interplanetarios, CAS requiere una cuidadosa planificación para tener éxito."
+            },
+            {
+                question: "El farolero encendía y apagaba su farol constantemente. ¿Qué nos enseña sobre CAS? 💡",
+                options: [
+                    "Que debemos hacer las cosas sin pensar",
+                    "Que la constancia y el compromiso son importantes",
+                    "Que debemos trabajar todo el tiempo"
+                ],
+                correct: 1,
+                explanation: "La dedicación del farolero nos muestra la importancia del compromiso continuo en CAS."
+            },
+            {
+                question: "Cuando conocí al geógrafo, él solo escribía sobre cosas permanentes. En CAS, ¿qué debemos documentar? 📚",
+                options: [
+                    "Solo los grandes logros",
+                    "Todo el proceso, incluyendo éxitos y desafíos",
+                    "Únicamente los resultados finales"
+                ],
+                correct: 1,
+                explanation: "Como un buen geógrafo de experiencias, debemos documentar todo nuestro viaje en CAS."
+            },
+            {
+                question: "Mi amigo el zorro me enseñó sobre crear vínculos. ¿Cómo se relaciona esto con CAS? 🦊",
+                options: [
+                    "Los vínculos no son importantes en CAS",
+                    "Crear conexiones significativas en la comunidad",
+                    "Solo importa el trabajo individual"
+                ],
+                correct: 1,
+                explanation: "Como mi amistad con el zorro, CAS nos enseña a crear vínculos significativos con nuestra comunidad."
+            },
+            {
+                question: "¿Qué significa la 'C' en CAS? Con la creatividad del atardecer que veo cada día... 🎨",
+                options: [
+                    "Creatividad",
+                    "Cooperación",
+                    "Comunicación"
+                ],
+                correct: 0,
+                explanation: "La Creatividad, como los hermosos atardeceres, nos permite ver el mundo de formas nuevas y únicas."
+            },
+            {
+                question: "En mi viaje, aprendí que cada planeta es único. ¿Qué nos enseña esto sobre los proyectos CAS? 🌍",
+                options: [
+                    "Todos los proyectos deben ser iguales",
+                    "Cada proyecto es único y valioso",
+                    "Solo importan los proyectos grandes"
+                ],
+                correct: 1,
+                explanation: "Como cada planeta que visité, cada proyecto CAS es único y tiene su propia belleza especial."
+            },
+            {
+                question: "Mi rosa era única porque la cuidé. ¿Qué aspecto de CAS refleja este cuidado personal? 🌺",
+                options: [
+                    "Actividad - cuidado físico",
+                    "Servicio - ayudar a otros",
+                    "Ambos - el autocuidado es parte de CAS"
+                ],
+                correct: 2,
+                explanation: "Como el cuidado de mi rosa, debemos cuidarnos a nosotros mismos y a los demás en CAS."
+            },
+            {
+                question: "Cuando conté estrellas para el rey, ¿qué habilidad de CAS estaba practicando? ⭐",
+                options: [
+                    "Colaboración",
+                    "Pensamiento crítico",
+                    "Organización y planificación"
+                ],
+                correct: 1,
+                explanation: "Contar estrellas, como el pensamiento crítico en CAS, requiere atención y análisis."
+            },
+            {
+                question: "El bebedor bebía para olvidar que bebía. ¿Qué nos enseña sobre la reflexión en CAS? 🤔",
+                options: [
+                    "Debemos reflexionar para aprender",
+                    "Es mejor no pensar en nuestras acciones",
+                    "La reflexión no es importante"
+                ],
+                correct: 0,
+                explanation: "A diferencia del bebedor, en CAS debemos reflexionar para aprender y crecer."
+            },
+            {
+                question: "¿Qué representa la 'A' en CAS? Como cuando tuve que perseguir mariposas... 🦋",
+                options: [
+                    "Actividad",
+                    "Atención",
+                    "Aprendizaje"
+                ],
+                correct: 0,
+                explanation: "La Actividad, como perseguir mariposas, nos mantiene en movimiento y saludables."
+            },
+            {
+                question: "El zorro me enseñó que para ver bien, hay que mirar con el corazón. En CAS, esto significa... 💝",
+                options: [
+                    "Solo importan los resultados visibles",
+                    "Debemos considerar el impacto emocional",
+                    "No es necesario reflexionar"
+                ],
+                correct: 1,
+                explanation: "Como el zorro me enseñó, en CAS debemos ver con el corazón y considerar cómo afectamos a otros."
+            },
+            {
+                question: "¿Qué significa la 'S' en CAS? Como cuando ayudé a mi rosa... 🌹",
+                options: [
+                    "Servicio",
+                    "Simpatía",
+                    "Solidaridad"
+                ],
+                correct: 0,
+                explanation: "El Servicio, como cuidar de mi rosa, significa ayudar y cuidar de otros."
+            },
+            {
+                question: "Cuando limpié mis volcanes, ¿qué tipo de actividad CAS estaba realizando? 🌋",
+                options: [
+                    "Solo creatividad",
+                    "Solo servicio",
+                    "Tanto servicio como actividad"
+                ],
+                correct: 2,
+                explanation: "Limpiar volcanes, como muchas actividades CAS, combina diferentes aspectos del programa."
+            },
+            {
+                question: "El vanidoso quería aplausos constantes. En CAS, ¿qué es más importante? 👏",
+                options: [
+                    "El reconocimiento externo",
+                    "El crecimiento personal y el impacto real",
+                    "La cantidad de actividades"
+                ],
+                correct: 1,
+                explanation: "A diferencia del vanidoso, en CAS valoramos el crecimiento real y el impacto significativo."
+            },
+            {
+                question: "Los baobabs crecían lentamente pero eran peligrosos. ¿Qué nos enseña sobre los proyectos CAS? 🌳",
+                options: [
+                    "Debemos actuar rápidamente sin pensar",
+                    "La planificación y prevención son importantes",
+                    "Los problemas se resuelven solos"
+                ],
+                correct: 1,
+                explanation: "Como con los baobabs, debemos planificar y prevenir problemas en nuestros proyectos CAS."
+            },
+            {
+                question: "Mi viaje me enseñó muchas cosas. ¿Cuándo termina realmente el aprendizaje en CAS? 🌠",
+                options: [
+                    "Nunca termina, es un proceso continuo",
+                    "Cuando acabamos los proyectos",
+                    "Al finalizar el programa"
+                ],
+                correct: 0,
+                explanation: "Como mi viaje de aprendizaje, CAS es un proceso continuo que va más allá del programa."
+            },
+            {
+                question: "El geógrafo nunca dejaba su escritorio. En CAS, ¿qué es esencial? 🗺️",
+                options: [
+                    "Solo planificar",
+                    "Solo actuar",
+                    "Equilibrar la planificación con la acción"
+                ],
+                correct: 2,
+                explanation: "A diferencia del geógrafo, en CAS debemos equilibrar la planificación con la acción real."
+            },
+            {
+                question: "Las estrellas me hacen reír. ¿Qué papel juega la alegría en CAS? ✨",
+                options: [
+                    "No es importante",
+                    "Es fundamental para un compromiso significativo",
+                    "Solo importa el trabajo serio"
+                ],
+                correct: 1,
+                explanation: "Como las estrellas que me hacen reír, la alegría es esencial en nuestras experiencias CAS."
+            },
+            {
+                question: "Mi flor era única en el universo. ¿Qué nos enseña sobre los proyectos CAS? 🌸",
+                options: [
+                    "Cada proyecto es único y especial",
+                    "Todos los proyectos deben ser iguales",
+                    "Solo importan los proyectos grandes"
+                ],
+                correct: 0,
+                explanation: "Como mi única flor, cada proyecto CAS es especial y tiene su propio valor único."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function displayQuestion() {
+            const q = questions[currentQuestion];
+            const container = document.getElementById('question-container');
+            
+            container.innerHTML = `
+                <div class="question">
+                    <p>${q.question}</p>
+                    <div class="options">
+                        ${q.options.map((option, index) => `
+                            <label>
+                                <input type="radio" name="answer" value="${index}">
+                                ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="feedback" id="feedback"></div>
+                    <button onclick="checkAnswer()">Verificar Respuesta</button>
+                </div>
+            `;
+            
+            document.getElementById('current').textContent = currentQuestion + 1;
+        }
+
+        function checkAnswer() {
+            const selected = document.querySelector('input[name="answer"]:checked');
+            if (!selected) {
+                alert('Por favor, selecciona una respuesta');
+                return;
+            }
+
+            const answer = parseInt(selected.value);
+            const correct = answer === questions[currentQuestion].correct;
+            const feedback = document.getElementById('feedback');
+            
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${correct ? 'correct' : 'incorrect'}`;
+            feedback.innerHTML = correct ? 
+                `¡Correcto! ${questions[currentQuestion].explanation}` :
+                `Incorrecto. ${questions[currentQuestion].explanation}`;
+
+            document.querySelectorAll('input[name="answer"]').forEach(input => input.disabled = true);
+            
+            if (correct) score++;
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    displayQuestion();
+                } else {
+                    showResults();
+                }
+            }, 2000);
+        }
+
+        function showResults() {
+            const container = document.getElementById('question-container');
+            const result = document.getElementById('result');
+            container.style.display = 'none';
+            result.innerHTML = `
+                <h2>¡Has completado el viaje! 🌟</h2>
+                <p>Conseguiste ${score} de ${questions.length} respuestas correctas.</p>
+                <p>${score >= questions.length * 0.8 ? 
+                    '¡Excelente! Eres un verdadero explorador de CAS.' :
+                    score >= questions.length * 0.6 ?
+                    'Buen trabajo. Sigue explorando y aprendiendo.' :
+                    'Cada viaje es una oportunidad para aprender más.'}
+                </p>
+                <button onclick="restartQuiz()">Volver a Empezar</button>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('question-container').style.display = 'block';
+            document.getElementById('result').innerHTML = '';
+            displayQuestion();
+        }
+
+        displayQuestion();
+    </script>
+
+
+</body></html>
